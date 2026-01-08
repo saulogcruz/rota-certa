@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rota Certa - Painel do Planejador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #0a0f1a;
+      --bg-card: #111827;
+      --bg-input: #1f2937;
+      --border: #374151;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --accent: #f59e0b;
+      --accent-hover: #fbbf24;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --info: #3b82f6;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .header-info {
+      text-align: right;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* Main Layout */
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1200px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    /* Result Box */
+    .result-box {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      border-radius: 12px;
+    }
+
+    .result-box.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-title {
+      font-weight: 600;
+      color: var(--success);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .result-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .result-link input {
+      flex: 1;
+      padding: 0.75rem;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+
+    .result-link button {
+      padding: 0.75rem 1rem;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .result-link button:hover {
+      opacity: 0.9;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .result-actions button {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    .btn-whatsapp {
+      background: #25d366;
+      color: #fff;
+    }
+
+    .btn-open {
+      background: var(--info);
+      color: #fff;
+    }
+
+    /* Alerts Preview */
+    .alerts-preview {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .alerts-preview-title {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .alert-tag {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .alert-tag.danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .alert-tag.warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--warning);
+    }
+
+    .alert-tag.info {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--info);
+    }
+
+    /* Routes List */
+    .routes-list {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .route-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg-input);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      transition: transform 0.2s;
+    }
+
+    .route-item:hover {
+      transform: translateX(4px);
+    }
+
+    .route-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .route-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .route-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .route-subtitle {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .route-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .route-time {
+      color: var(--text-secondary);
+    }
+
+    .route-alerts {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .route-alert-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .route-alert-dot.danger { background: var(--danger); }
+    .route-alert-dot.warning { background: var(--warning); }
+
+    .route-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .route-actions button {
+      padding: 0.5rem 0.75rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .route-actions button:hover {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">🚛</div>
+      <div class="logo-text">Rota<span>Certa</span></div>
+    </div>
+    <div class="header-info">
+      <div>Painel do Planejador</div>
+      <div id="currentDate"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Form Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📍</div>
+        <h2 class="card-title">Nova Rota</h2>
+      </div>
+
+      <form id="routeForm">
+        <div class="form-group">
+          <label class="form-label">Origem *</label>
+          <input 
+            type="text" 
+            class="form-input" 
+            id="origin" 
+            placeholder="Ex: Rua das Flores, 123 - Guarulhos, SP"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Destino *</label>
+          <input 
+            type="text" 
+            class="form-input" 
+            id="destination" 
+            placeholder="Ex: Porto de Santos - Av. Portuária, Santos"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tipo de Veículo *</label>
+          <select class="form-select" id="vehicleId" required>
+            <option value="">Selecione o veículo...</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Placa do Veículo</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              id="vehiclePlate" 
+              placeholder="ABC-1234"
+            >
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nome do Motorista</label>
+            <input 
+              type="text" 
+              class="form-input" 
+              id="driverName" 
+              placeholder="João Silva"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Observações</label>
+          <textarea 
+            class="form-textarea" 
+            id="notes" 
+            placeholder="Ex: Entregar até 14h, procurar por Maria no portão 3"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <span>🗺️</span>
+          <span>Gerar Rota</span>
+        </button>
+      </form>
+
+      <!-- Result Box -->
+      <div class="result-box" id="resultBox">
+        <div class="result-title">
+          <span>✅</span>
+          <span>Rota criada com sucesso!</span>
+        </div>
+        
+        <div class="result-link">
+          <input type="text" id="shareLink" readonly>
+          <button onclick="copyLink()">📋 Copiar</button>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-whatsapp" onclick="sendWhatsApp()">
+            📱 Enviar WhatsApp
+          </button>
+          <button class="btn-open" onclick="openRoute()">
+            🔗 Abrir Rota
+          </button>
+        </div>
+
+        <div class="alerts-preview" id="alertsPreview">
+          <div class="alerts-preview-title">Alertas encontrados:</div>
+          <div id="alertsTags"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Routes List Card -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <h2 class="card-title">Rotas Recentes</h2>
+      </div>
+
+      <div class="routes-list" id="routesList">
+        <div class="empty-state">
+          <div class="empty-state-icon">🗺️</div>
+          <p>Nenhuma rota criada ainda</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Estado da aplicação
+    let currentRouteId = null;
+    let currentShareLink = null;
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      updateDate();
+      loadVehicles();
+      loadRoutes();
+    });
+
+    // Atualizar data atual
+    function updateDate() {
+      const now = new Date();
+      const options = { 
+        weekday: 'long', 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      };
+      document.getElementById('currentDate').textContent = 
+        now.toLocaleDateString('pt-BR', options);
+    }
+
+    // Carregar veículos
+    async function loadVehicles() {
+      try {
+        const response = await fetch('/api/vehicles');
+        const vehicles = await response.json();
+        
+        const select = document.getElementById('vehicleId');
+        vehicles.forEach(vehicle => {
+          const option = document.createElement('option');
+          option.value = vehicle.id;
+          option.textContent = `${vehicle.name} (${vehicle.height_m}m / ${vehicle.weight_ton}t)`;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar veículos:', error);
+      }
+    }
+
+    // Carregar rotas recentes
+    async function loadRoutes() {
+      try {
+        const response = await fetch('/api/routes');
+        const routes = await response.json();
+        
+        const container = document.getElementById('routesList');
+        
+        if (routes.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">🗺️</div>
+              <p>Nenhuma rota criada ainda</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = routes.map(route => {
+          const dangerCount = route.alerts.filter(a => a.severity === 'danger').length;
+          const warningCount = route.alerts.filter(a => a.severity === 'warning').length;
+          const time = new Date(route.createdAt).toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          });
+
+          return `
+            <div class="route-item">
+              <div class="route-icon">🚛</div>
+              <div class="route-info">
+                <div class="route-title">${route.origin} → ${route.destination}</div>
+                <div class="route-subtitle">${route.vehicle.name} ${route.vehiclePlate ? `• ${route.vehiclePlate}` : ''}</div>
+                <div class="route-meta">
+                  <span class="route-time">${time}</span>
+                  <div class="route-alerts">
+                    ${dangerCount > 0 ? `<span class="route-alert-dot danger" title="${dangerCount} alertas críticos"></span>` : ''}
+                    ${warningCount > 0 ? `<span class="route-alert-dot warning" title="${warningCount} alertas de atenção"></span>` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="route-actions">
+                <button onclick="openRouteById('${route.id}')">Abrir</button>
+                <button onclick="copyRouteLink('${route.id}')">Copiar</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Erro ao carregar rotas:', error);
+      }
+    }
+
+    // Submit do formulário
+    document.getElementById('routeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span><span>Gerando...</span>';
+
+      const data = {
+        origin: document.getElementById('origin').value,
+        destination: document.getElementById('destination').value,
+        vehicleId: document.getElementById('vehicleId').value,
+        vehiclePlate: document.getElementById('vehiclePlate').value,
+        driverName: document.getElementById('driverName').value,
+        notes: document.getElementById('notes').value
+      };
+
+      try {
+        const response = await fetch('/api/routes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          currentRouteId = result.routeId;
+          currentShareLink = result.shareLink;
+          
+          document.getElementById('shareLink').value = result.shareLink;
+          
+          // Mostrar alertas
+          const alertsTags = document.getElementById('alertsTags');
+          if (result.route.alerts.length > 0) {
+            alertsTags.innerHTML = result.route.alerts.map(alert => 
+              `<span class="alert-tag ${alert.severity}">${alert.name}</span>`
+            ).join('');
+            document.getElementById('alertsPreview').style.display = 'block';
+          } else {
+            document.getElementById('alertsPreview').style.display = 'none';
+          }
+          
+          document.getElementById('resultBox').classList.add('show');
+          loadRoutes(); // Atualizar lista
+        }
+      } catch (error) {
+        console.error('Erro ao criar rota:', error);
+        alert('Erro ao criar rota. Tente novamente.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🗺️</span><span>Gerar Rota</span>';
+      }
+    });
+
+    // Copiar link
+    function copyLink() {
+      const input = document.getElementById('shareLink');
+      input.select();
+      document.execCommand('copy');
+      
+      const btn = event.target;
+      btn.textContent = '✅ Copiado!';
+      setTimeout(() => btn.textContent = '📋 Copiar', 2000);
+    }
+
+    // Enviar WhatsApp
+    function sendWhatsApp() {
+      const driverName = document.getElementById('driverName').value || 'Motorista';
+      const destination = document.getElementById('destination').value;
+      
+      const message = encodeURIComponent(
+        `🚛 *Rota para ${driverName}*\n\n` +
+        `📍 Destino: ${destination}\n\n` +
+        `🔗 Abra o link para ver a rota completa e os alertas:\n${currentShareLink}`
+      );
+      
+      window.open(`https://wa.me/?text=${message}`, '_blank');
+    }
+
+    // Abrir rota
+    function openRoute() {
+      window.open(currentShareLink, '_blank');
+    }
+
+    // Abrir rota por ID
+    function openRouteById(id) {
+      window.open(`/rota/${id}`, '_blank');
+    }
+
+    // Copiar link da rota
+    function copyRouteLink(id) {
+      const link = `${window.location.origin}/rota/${id}`;
+      navigator.clipboard.writeText(link).then(() => {
+        alert('Link copiado!');
+      });
+    }
+  </script>
+</body>
+</html>
